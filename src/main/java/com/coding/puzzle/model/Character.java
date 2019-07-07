@@ -1,3 +1,7 @@
 package com.coding.puzzle.model;
 
-public class Character {}
+import java.util.Hashtable;
+
+public abstract class Character {
+    private Hashtable<AttributeName,Attribute> attributes;
+}

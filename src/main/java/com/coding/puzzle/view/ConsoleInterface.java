@@ -1,28 +1,23 @@
 package com.coding.puzzle.view;
 
-import com.coding.puzzle.Main;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class ConsoleInterface extends UserInterface {
+
     @Override
     public void showMainMenu() {
-        this.printSpriteFromFile("/ascii-sprites/infinite");
-
+        this.printSpriteFromFile("ascii-sprites/infinite");
     }
 
     public void printSpriteFromFile(String path){
-        try {
-            System.out.println(this.getClass().getResource(path).toURI());
-            Files.lines(Paths.get(this.getClass().getResource(path).toURI()), StandardCharsets.US_ASCII).forEachOrdered(s1 -> System.out.println(s1));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+
+        InputStream resourceStream = ClassLoader.getSystemClassLoader().getResourceAsStream(path);
+
+        if (resourceStream != null) {
+            BufferedReader resourceReader = new BufferedReader(new InputStreamReader(resourceStream));
+            resourceReader.lines().forEachOrdered(s -> System.out.println(s));
         }
 
     }
