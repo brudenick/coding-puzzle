@@ -1,4 +1,4 @@
-package com.coding.puzzle.model;
+package com.coding.puzzle.model.location;
 
 public enum LocationName {
     CITY("City"),

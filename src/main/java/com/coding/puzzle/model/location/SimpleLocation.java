@@ -1,4 +1,4 @@
-package com.coding.puzzle.model;
+package com.coding.puzzle.model.location;
 
 public class SimpleLocation implements Location{
 
@@ -11,7 +11,12 @@ public class SimpleLocation implements Location{
     }
 
     @Override
-    public String getContent() {
-        return name.toString();
+    public Integer getSize() {
+        return 1;
+    }
+
+    @Override
+    public String getSprite() {
+        return null;
     }
 }

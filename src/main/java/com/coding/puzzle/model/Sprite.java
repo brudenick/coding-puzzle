@@ -1,3 +1,4 @@
 package com.coding.puzzle.model;
 
-public class Player {}
+public enum Sprite {
+}
