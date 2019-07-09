@@ -11,7 +11,7 @@ public class ConsoleUserInputReader implements UserInputReader {
         userInput = scanner.nextLine();
 
         while (userInput.equals("")) {
-            System.out.println("Please insert a value.");
+            System.out.println("Please insert a value:");
             userInput = scanner.nextLine();
         }
         return userInput;

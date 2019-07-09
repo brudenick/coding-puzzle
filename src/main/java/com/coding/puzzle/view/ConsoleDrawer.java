@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ConsoleDrawer implements Drawer {
 
-    public void printSpriteFromFile(String path){
+    public void printFromFile(String path){
 
         InputStream resourceStream = ClassLoader.getSystemClassLoader().getResourceAsStream(path);
 
@@ -19,13 +19,13 @@ public class ConsoleDrawer implements Drawer {
 
     @Override
     public void displayMessage(String message) {
+        System.out.println();
         System.out.println(message);
     }
 
     @Override
     public void displayOptions(List<String> options) {
-        System.out.println("\n"+options.get(0));
-        options.stream().skip(1).forEachOrdered(option -> System.out.println(options.indexOf(option)+"-"+option));
+        options.stream().forEachOrdered(option -> System.out.println(options.indexOf(option)+1+"-"+option));
     }
 
     public Integer getUserInput(){

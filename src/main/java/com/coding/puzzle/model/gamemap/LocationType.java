@@ -17,7 +17,7 @@ public enum LocationType {
         this.name = name;
     }
 
-    public String toString() {
+    public String getName() {
         return this.name;
     }
 

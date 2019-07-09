@@ -11,6 +11,7 @@ import com.coding.puzzle.view.Drawer;
 import com.coding.puzzle.view.UserInputReader;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public final class GameController {
 
@@ -18,19 +19,19 @@ public final class GameController {
     private UserInputReader userInputReader;
     private static final List<String> mainMenu = new ArrayList<>();
     private static final List<String> raceMenu = new ArrayList<>();
+    private List<String> allowedDirectionsMenu = new ArrayList<>();
 
     private Character player;
+    private GameMap gameMap;
 
     static {
         //Static building of Main Menu
-        mainMenu.add("Main Menu:");
         mainMenu.add(MainMenuOption.NEW_GAME);
         mainMenu.add(MainMenuOption.LOAD_GAME);
         mainMenu.add(MainMenuOption.INSTRUCTIONS);
         mainMenu.add(MainMenuOption.EXIT);
 
         //Static building of Race Menu
-        raceMenu.add("Select a race:");
         raceMenu.add(Modifier.ORC.getName());
         raceMenu.add(Modifier.HUMAN.getName());
     }
@@ -41,6 +42,7 @@ public final class GameController {
     }
 
     public void startGame(){
+        drawer.displayMessage("Choose an option:");
         drawer.displayOptions(mainMenu);
         Integer optionSelected = this.getValidUserSelection(mainMenu);
         drawer.displayMessage("Option Selected: " + mainMenu.get(optionSelected));
@@ -64,7 +66,7 @@ public final class GameController {
     private boolean isValidUserSelection(String userInput, Integer optionsSize){
         try{
             Integer integerInput = Integer.parseInt(userInput);
-            if (integerInput<1 || integerInput>=optionsSize){
+            if (integerInput<1 || integerInput>optionsSize){
                 throw new InputMismatchException();
             }
         }catch (NumberFormatException | InputMismatchException ex){
@@ -79,13 +81,14 @@ public final class GameController {
         while (!isValidUserSelection(userInput,options.size())){
             userInput = userInputReader.getInputString();
         }
-        return Integer.parseInt(userInput);
+        return Integer.parseInt(userInput)-1;
     }
 
     public void newGame(){
         drawer.displayMessage("Choose a name for your character: ");
         String name = userInputReader.getInputString();
 
+        drawer.displayMessage("Choose the race of your character:");
         drawer.displayOptions(raceMenu);
         Integer optionSelected = this.getValidUserSelection(raceMenu);
         String race = raceMenu.get(optionSelected);
@@ -93,8 +96,22 @@ public final class GameController {
 
         this.createCharacter(name,race, CharacterType.HERO);
 
-        GameMap gameMap = new MatrixGameMap();
+        this.gameMap = new MatrixGameMap();
         gameMap.buildMap(5,"random_map");
+
+        this.startGameplay();
+    }
+
+    public void startGameplay(){
+        List<Direction> allowedDirections;
+        while (true){
+            drawer.displayMessage("Current Location: "+gameMap.getCurrentLocation().getType().getName());
+            drawer.displayMessage("Choose where to move: ");
+            allowedDirections = gameMap.getAllowedDirections();
+            allowedDirectionsMenu = allowedDirections.stream().map(direction -> "Move to the "+ direction.getName()).collect(Collectors.toList());
+            drawer.displayOptions(allowedDirectionsMenu);
+            gameMap.movePlayer(allowedDirections.get(this.getValidUserSelection(allowedDirectionsMenu)));
+        }
     }
 
     public void loadGame(){
@@ -118,5 +135,13 @@ public final class GameController {
 
     public void setPlayer(Character player) {
         this.player = player;
+    }
+
+    public GameMap getGameMap() {
+        return gameMap;
+    }
+
+    public void setGameMap(GameMap gameMap) {
+        this.gameMap = gameMap;
     }
 }
