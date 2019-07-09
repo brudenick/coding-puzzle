@@ -1,34 +1,19 @@
 package com.coding.puzzle.view;
 
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class ConsoleUserInputReader implements UserInputReader {
 
     @Override
-    public Integer getOptionSelected(Integer optionsSize) {
+    public String getInputString() {
         Scanner scanner = new Scanner(System.in);
-        Integer optionSelected = -1;
-        while (optionSelected.equals(-1)){
-            try{
-                //TODO: this can be done prettier
-                System.out.print("Selection: ");
-                optionSelected = Integer.parseInt(scanner.nextLine());
-                if (optionSelected<1 || optionSelected>=optionsSize){
-                    optionSelected = -1;
-                    throw new InputMismatchException();
-                }
-            }catch (InputMismatchException | NumberFormatException ex){
-                System.out.println("The selected option doesn't exist, select a number within the options.");
-            }
+        String userInput = "";
+        userInput = scanner.nextLine();
+
+        while (userInput.equals("")) {
+            System.out.println("Please insert a value.");
+            userInput = scanner.nextLine();
         }
-        return optionSelected;
+        return userInput;
     }
-
-    @Override
-    public String getString(){
-        Scanner scanner = new Scanner(System.in);
-        return scanner.nextLine();
-    }
-
 }

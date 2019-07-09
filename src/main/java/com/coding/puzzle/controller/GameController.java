@@ -1,41 +1,38 @@
 package com.coding.puzzle.controller;
 
 import com.coding.puzzle.model.Direction;
-import com.coding.puzzle.model.character.CharClass;
-import com.coding.puzzle.model.character.Race;
+import com.coding.puzzle.model.character.Character;
+import com.coding.puzzle.model.character.CharacterType;
+import com.coding.puzzle.model.character.Modifier;
+import com.coding.puzzle.model.gamemap.GameMap;
+import com.coding.puzzle.model.gamemap.MatrixGameMap;
 import com.coding.puzzle.model.options.MainMenuOption;
 import com.coding.puzzle.view.Drawer;
 import com.coding.puzzle.view.UserInputReader;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 public final class GameController {
 
     private Drawer drawer;
     private UserInputReader userInputReader;
-    private CharacterFactory characterFactory = new CharacterFactory();
     private static final List<String> mainMenu = new ArrayList<>();
     private static final List<String> raceMenu = new ArrayList<>();
-    private static final List<String> classMenu = new ArrayList<>();
+
+    private Character player;
 
     static {
+        //Static building of Main Menu
         mainMenu.add("Main Menu:");
         mainMenu.add(MainMenuOption.NEW_GAME);
         mainMenu.add(MainMenuOption.LOAD_GAME);
         mainMenu.add(MainMenuOption.INSTRUCTIONS);
         mainMenu.add(MainMenuOption.EXIT);
 
+        //Static building of Race Menu
         raceMenu.add("Select a race:");
-        //An option is added to the menu for each value defined in the enum Race.
-        raceMenu.addAll(Arrays.stream(Race.values()).map(Race::toString).collect(Collectors.toList()));
-
-        classMenu.add("Select a class:");
-        //An option is added to the menu for each value defined in the enum CharClass.
-        classMenu.addAll(Arrays.stream(CharClass.values()).map(CharClass::toString).collect(Collectors.toList()));
-
+        raceMenu.add(Modifier.ORC.getName());
+        raceMenu.add(Modifier.HUMAN.getName());
     }
 
     public GameController(Drawer drawer, UserInputReader userInputReader){
@@ -45,7 +42,7 @@ public final class GameController {
 
     public void startGame(){
         drawer.displayOptions(mainMenu);
-        Integer optionSelected = userInputReader.getOptionSelected(mainMenu.size());
+        Integer optionSelected = this.getValidUserSelection(mainMenu);
         drawer.displayMessage("Option Selected: " + mainMenu.get(optionSelected));
 
         switch(mainMenu.get(optionSelected)){
@@ -53,9 +50,10 @@ public final class GameController {
                 this.newGame();
                 break;
             case MainMenuOption.LOAD_GAME:
-                this.loadGame();
+                this.loadGame();//TODO
                 break;
             case MainMenuOption.INSTRUCTIONS:
+                drawer.displayMessage("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
                 break;
             case MainMenuOption.EXIT:
                 System.exit(0);
@@ -63,33 +61,62 @@ public final class GameController {
         }
     }
 
+    private boolean isValidUserSelection(String userInput, Integer optionsSize){
+        try{
+            Integer integerInput = Integer.parseInt(userInput);
+            if (integerInput<1 || integerInput>=optionsSize){
+                throw new InputMismatchException();
+            }
+        }catch (NumberFormatException | InputMismatchException ex){
+            drawer.displayMessage("The selected option doesn't exist, select a number within the options.");
+            return false;
+        }
+        return true;
+    }
+
+    private Integer getValidUserSelection(List<String> options){
+        String userInput = userInputReader.getInputString();
+        while (!isValidUserSelection(userInput,options.size())){
+            userInput = userInputReader.getInputString();
+        }
+        return Integer.parseInt(userInput);
+    }
+
     public void newGame(){
-        drawer.displayMessage("\nChoose a name for your character: ");
-        String name = userInputReader.getString();
+        drawer.displayMessage("Choose a name for your character: ");
+        String name = userInputReader.getInputString();
 
         drawer.displayOptions(raceMenu);
-        String race = raceMenu.get(userInputReader.getOptionSelected(raceMenu.size()));
+        Integer optionSelected = this.getValidUserSelection(raceMenu);
+        String race = raceMenu.get(optionSelected);
         drawer.displayMessage("Race Selected: " + race);
 
-        drawer.displayOptions(classMenu);
-        String charClass = classMenu.get(userInputReader.getOptionSelected(classMenu.size()));
-        drawer.displayMessage("Class Selected: " + charClass);
+        this.createCharacter(name,race, CharacterType.HERO);
 
-        this.createCharacter(name,race,charClass);
+        GameMap gameMap = new MatrixGameMap();
+        gameMap.buildMap(5,"random_map");
     }
 
     public void loadGame(){
         //TODO
+        GameMap gameMap = new MatrixGameMap();
     }
 
-    public void createCharacter(String name,String race,String charClass){
-        //Character character = characterFactory.getCharacter(name,race,charClass);
+    public void createCharacter(String name, String race, CharacterType characterType){
+        this.player = new Character(name,race,characterType);
     }
 
     public void spawnEnemy(){
     }
 
     public void moveCharacter(Direction direction){
+    }
 
+    public Character getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Character player) {
+        this.player = player;
     }
 }

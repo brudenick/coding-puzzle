@@ -1,10 +1,7 @@
 package com.coding.puzzle;
 
 import com.coding.puzzle.controller.GameController;
-import com.coding.puzzle.view.ConsoleDrawer;
-import com.coding.puzzle.view.ConsoleUserInputReader;
-import com.coding.puzzle.view.Drawer;
-import com.coding.puzzle.view.UserInputReader;
+import com.coding.puzzle.view.*;
 
 public class Main {
 
@@ -16,7 +13,7 @@ public class Main {
         UserInputReader userInputReader = new ConsoleUserInputReader();
         gameController = new GameController(drawer,userInputReader);
 
-        //Game Beginning
+        //Game Start
         gameController.startGame();
     }
 
