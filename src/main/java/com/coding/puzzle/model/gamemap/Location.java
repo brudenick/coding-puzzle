@@ -13,6 +13,11 @@ public class Location {
         this.type = type;
     }
 
+    public Location(UUID uuid, String type){
+        this.uuid = uuid;
+        this.type = LocationType.valueOf(type.toUpperCase());
+    }
+
     public UUID getUuid() {
         return uuid;
     }
@@ -44,5 +49,10 @@ public class Location {
     @Override
     public int hashCode() {
         return Objects.hash(getUuid());
+    }
+
+    @Override
+    public String toString() {
+        return uuid+";"+type.getName();
     }
 }

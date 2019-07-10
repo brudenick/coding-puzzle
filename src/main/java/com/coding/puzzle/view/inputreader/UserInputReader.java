@@ -1,4 +1,4 @@
-package com.coding.puzzle.view;
+package com.coding.puzzle.view.inputreader;
 
 public interface UserInputReader {
     String getInputString();

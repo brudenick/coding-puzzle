@@ -1,7 +1,6 @@
 package com.coding.puzzle.model.character;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Character {
     private String name;
@@ -10,8 +9,8 @@ public class Character {
     private Integer currentHp = 100;
     private Integer currentExperience = 0;
 
-    private Double baseDamage = 10.0;
-    private Double baseDefense = 10.0;
+    private Double baseDamage = (Math.random()*2.5)+7.5;
+    private Double baseDefense = (Math.random()*2.5)+2.5;
 
     private CharacterType characterType;
 
@@ -20,7 +19,27 @@ public class Character {
     public Character (String name, String race, CharacterType characterType){
         this.name = name;
         this.characterType = characterType;
-        this.addModifier(Modifier.getModifierByName(race));
+        if (characterType.equals(CharacterType.ENEMY)){
+            this.maxHp = Math.toIntExact(Math.round(Math.random()*25)+25); //Random HP between 25 and 50;
+            this.currentHp = maxHp;
+            this.addModifier(Arrays.stream(Modifier.values()).skip(new Random().nextInt(Modifier.values().length-1)).findFirst().get());
+        }else{
+            this.addModifier(Modifier.valueOf(race));
+        }
+    }
+
+    //Creates a character with the given list of attributes.*Used when loading a game*
+    public Character(List<String> attributes) {
+        this.name = attributes.get(0);attributes.remove(0);
+        this.maxHp = Integer.parseInt(attributes.get(0));attributes.remove(0);
+        this.currentHp = Integer.parseInt(attributes.get(0));attributes.remove(0);
+        this.currentExperience = Integer.parseInt(attributes.get(0));attributes.remove(0);
+        this.baseDamage = Double.parseDouble(attributes.get(0));attributes.remove(0);
+        this.baseDefense = Double.parseDouble(attributes.get(0));attributes.remove(0);
+        this.characterType = CharacterType.valueOf(attributes.get(0));attributes.remove(0);
+        for(String modifier : attributes){
+            this.addModifier(Modifier.valueOf(modifier));
+        }
     }
 
     public Integer getDamage(){
@@ -31,9 +50,9 @@ public class Character {
         return Math.toIntExact(Math.round(modifiers.values().stream().map(Modifier::getDefenseMultiplyer).reduce(this.baseDefense, (a, b) -> a * b)));
     }
 
-    public static void main(String[] args){
-        Character c = new Character("name",Modifier.ORC.getName(),CharacterType.HERO);
-        System.out.println(c.getDamage());
+
+    public void receiveDamage(Integer damageReceived){
+        this.currentHp -= Math.max(0, damageReceived-this.getDefense());
     }
 
     public void addModifier(Modifier modifier){
@@ -44,6 +63,10 @@ public class Character {
 
     public void increaseExperience(Integer expGained){
         currentExperience+=expGained;
+    }
+
+    public Integer getCurrentExperience(){
+        return currentExperience;
     }
 
     public String getName() {
@@ -85,6 +108,22 @@ public class Character {
     public void setCharacterType(CharacterType characterType) {
         this.characterType = characterType;
     }
+
+    public boolean isAlive() {
+        return currentHp>0;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(name+"\n");
+        stringBuilder.append(maxHp+"\n");
+        stringBuilder.append(currentHp+"\n");
+        stringBuilder.append(currentExperience+"\n");
+        stringBuilder.append(baseDamage+"\n");
+        stringBuilder.append(baseDefense+"\n");
+        stringBuilder.append(characterType.toString()+"\n");
+        modifiers.values().stream().map(Modifier::toString).forEach(s -> stringBuilder.append(s+","));
+        return stringBuilder.toString().substring(0,stringBuilder.length()-1);//Remove the last \n
+    }
 }
-
-

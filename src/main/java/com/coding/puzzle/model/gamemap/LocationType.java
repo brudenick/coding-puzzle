@@ -7,6 +7,7 @@ public enum LocationType {
     CASTLE("Castle"),
     FOREST("Forest");
 
+    private Integer id;
     private String name;
 
     private static final List<LocationType> VALUES = Collections.unmodifiableList(Arrays.asList(values()));

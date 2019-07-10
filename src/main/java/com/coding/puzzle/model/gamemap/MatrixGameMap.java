@@ -1,9 +1,14 @@
 package com.coding.puzzle.model.gamemap;
 
-import com.coding.puzzle.model.Direction;
+import com.coding.puzzle.model.options.Direction;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class MatrixGameMap implements GameMap {
 
@@ -17,7 +22,7 @@ public class MatrixGameMap implements GameMap {
 
     @Override
     public void buildMap(Integer size,String mapName) {
-        this.name = name;
+        this.name = mapName;
         this.width = size;
         this.height = size;
         this.currentX = (int)(Math.random()*size);
@@ -30,9 +35,9 @@ public class MatrixGameMap implements GameMap {
         }
     }
 
-    @Override
-    public void buildMap(List<Location> locations, Location initialLocation, String mapName){
-        this.name = name;
+    //Builds a map with given list of locations and initial location. Used to load previous game.
+    private void buildMap(List<Location> locations, Location initialLocation, String mapName){
+        this.name = mapName;
         Integer size = Math.toIntExact(Math.round(Math.sqrt(locations.size())));
         this.width = size;
         this.height = size;
@@ -48,8 +53,43 @@ public class MatrixGameMap implements GameMap {
         }
     }
 
-    public void saveMap(){
-        //TODO
+    @Override
+    public void loadMap(String saveName) throws IOException {
+        //Read all the file.
+        BufferedReader br = Files.newBufferedReader(Paths.get("./"+saveName+".codingpuzzlemap"));
+        List<String> loadedMap = br.lines().collect(Collectors.toList());
+        br.close();
+
+        //Set the initialLocation = first line in the file.
+        Location initialLocation = new Location(UUID.fromString(loadedMap.get(0).split(";")[0]),loadedMap.get(0).split(";")[1]);
+
+        //Create the List<Location> that will be used to build the map.
+        List<Location> locations = new ArrayList<>();
+        for (int i = 1 ; i<loadedMap.size() ; i++){
+            locations.add(new Location(UUID.fromString(loadedMap.get(i).split(";")[0]),loadedMap.get(i).split(";")[1]));
+        }
+
+        this.buildMap(locations,initialLocation,"mapName");
+
+    }
+
+    @Override
+    public void saveMap(String characterName) throws IOException {
+        StringBuilder mapString = new StringBuilder();
+
+        //The first line is the currentLocation.
+        mapString.append(this.getCurrentLocation()+"\n");
+
+        //Go through the Matrix, adding one line per map Location in the string,
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                mapString.append(map[ y ][ x ].toString()+"\n");
+            }
+        }
+        BufferedWriter writer = new BufferedWriter(new FileWriter("./"+characterName+".codingpuzzlemap"));
+        //Remove the last '\n' of the String and write it to the file.
+        writer.write(mapString.toString().substring(0,mapString.length()-1));
+        writer.close();
     }
 
     @Override
@@ -100,8 +140,12 @@ public class MatrixGameMap implements GameMap {
         locations.add(l4);
 
         GameMap gameMap = new MatrixGameMap();
-        gameMap.buildMap(locations,l3,"map_1");
+        try {
+            gameMap.loadMap("map_1");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        gameMap.getAllowedDirections().stream().forEach(System.out::println);
+        String s = "";
     }
 }

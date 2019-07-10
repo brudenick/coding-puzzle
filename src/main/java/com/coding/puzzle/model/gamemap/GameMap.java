@@ -1,16 +1,14 @@
 package com.coding.puzzle.model.gamemap;
 
-import com.coding.puzzle.model.Direction;
+import com.coding.puzzle.model.options.Direction;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface GameMap {
 
     //Builds a map with random locations and random initial location.
     void buildMap(Integer size,String mapName);
-
-    //Builds a map with given list of locations and initial location. Used to load previous game.
-    void buildMap(List<Location> locations, Location initialLocation, String mapName);
 
     //Returns the current location.
     Location getCurrentLocation();
@@ -21,6 +19,9 @@ public interface GameMap {
     //Updates player current position in map depending on the selected direction.
     void movePlayer(Direction direction);
 
-    //Saves the map in a file.
-    void saveMap();
+    //Saves the map in a file named like the character.
+    void saveMap(String characterName) throws IOException;
+
+    //Load the map from a filePath.
+    void loadMap(String mapName) throws IOException;
 }

@@ -1,8 +1,18 @@
 package com.coding.puzzle.model.options;
 
-public class MainMenuOption {
-    public static final String NEW_GAME = "New Game";
-    public static final String LOAD_GAME = "Load Game";
-    public static final String INSTRUCTIONS = "Instructions";
-    public static final String EXIT = "Exit";
+public enum MainMenuOption {
+    NEW_GAME("New Game"),
+    LOAD_GAME("Load Game"),
+    INSTRUCTIONS("Instructions"),
+    EXIT("Exit");
+
+    private String name;
+
+    MainMenuOption (String name){
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

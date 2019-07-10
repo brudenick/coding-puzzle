@@ -1,4 +1,4 @@
-package com.coding.puzzle.view;
+package com.coding.puzzle.view.inputreader;
 
 import java.util.Scanner;
 
@@ -14,6 +14,7 @@ public class ConsoleUserInputReader implements UserInputReader {
             System.out.println("Please insert a value:");
             userInput = scanner.nextLine();
         }
+
         return userInput;
     }
 }

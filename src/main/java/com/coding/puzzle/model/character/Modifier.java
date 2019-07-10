@@ -17,10 +17,6 @@ public enum Modifier {
     private Double damageMultiplyer;
     private Double defenseMultiplyer;
 
-    public static Modifier getModifierByName(String name){
-        return Arrays.stream(Modifier.values()).filter(modifier -> modifier.getName().equals(name)).findFirst().get();
-    }
-
     public String getName() {
         return name;
     }
