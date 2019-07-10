@@ -123,27 +123,4 @@ public class MatrixGameMap implements GameMap {
         }
 
     }
-
-    //TODO: Move to tests
-    public static void main (String[] args){
-        Location l1 = new Location(LocationType.getRandomLocationType());
-        Location l2 = new Location(LocationType.getRandomLocationType());
-        Location l3 = new Location(LocationType.getRandomLocationType());
-        Location l4 = new Location(LocationType.getRandomLocationType());
-
-        List<Location> locations = new ArrayList<>();
-        locations.add(l1);
-        locations.add(l2);
-        locations.add(l3);
-        locations.add(l4);
-
-        GameMap gameMap = new MatrixGameMap();
-        try {
-            gameMap.loadMap("map_1");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String s = "";
-    }
 }

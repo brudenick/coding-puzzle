@@ -158,6 +158,8 @@ public final class GameController {
 
     //This and all the "playing" methods could be moved to a GamePlayController.
     private void play(){
+        drawer.displayMessage("GAME OBJECTIVES:");
+        gameObjectives.getObjectives().stream().forEach(s -> drawer.displayMessage("> "+s));
         List<Direction> allowedDirections;
         while (!gameObjectives.objectivesCompleted(playerCharacter) && this.playerCharacter.isAlive()){
             //Asks the gameMap for the movements that can be done from currentLocation.
@@ -319,7 +321,7 @@ public final class GameController {
 
         //If the enemy is dead, then the playerCharacter should earn experience.
         if (!enemy.isAlive()){
-            Integer experienceGained = gameEventGenerator.getExperienceDroppedByEnemy(this.playerCharacter,enemy);
+            Integer experienceGained = this.playerCharacter.getExperienceDroppedByEnemy(enemy);
             this.playerCharacter.increaseExperience(experienceGained);
             drawer.displayMessage("XP gained: "+experienceGained);
         }

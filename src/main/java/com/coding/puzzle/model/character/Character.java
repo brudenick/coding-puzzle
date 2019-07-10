@@ -8,7 +8,6 @@ public class Character {
     private Integer maxHp = 100;
     private Integer currentHp = 100;
     private Integer currentExperience = 0;
-
     private Double baseDamage = (Math.random()*2.5)+7.5;
     private Double baseDefense = (Math.random()*2.5)+2.5;
 
@@ -126,6 +125,11 @@ public class Character {
 
     public boolean isAlive() {
         return currentHp>0;
+    }
+
+    public Integer getExperienceDroppedByEnemy(Character enemy) {
+        //We can specify some logic to determine the experience that the hero should gain.
+        return Math.toIntExact(Math.round(Math.random()*50)+50);
     }
 
     //Used to persist the character in a file.
