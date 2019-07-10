@@ -8,7 +8,7 @@ import java.util.List;
 public interface GameMap {
 
     //Builds a map with random locations and random initial location.
-    void buildMap(Integer size,String mapName);
+    void buildMap(Integer size);
 
     //Returns the current location.
     Location getCurrentLocation();

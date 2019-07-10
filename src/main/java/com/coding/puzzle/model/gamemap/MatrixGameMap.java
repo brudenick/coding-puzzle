@@ -21,8 +21,7 @@ public class MatrixGameMap implements GameMap {
     private Integer currentX,currentY;//Current player coordinates.
 
     @Override
-    public void buildMap(Integer size,String mapName) {
-        this.name = mapName;
+    public void buildMap(Integer size) {
         this.width = size;
         this.height = size;
         this.currentX = (int)(Math.random()*size);
@@ -36,8 +35,7 @@ public class MatrixGameMap implements GameMap {
     }
 
     //Builds a map with given list of locations and initial location. Used to load previous game.
-    private void buildMap(List<Location> locations, Location initialLocation, String mapName){
-        this.name = mapName;
+    private void buildMap(List<Location> locations, Location initialLocation){
         Integer size = Math.toIntExact(Math.round(Math.sqrt(locations.size())));
         this.width = size;
         this.height = size;
@@ -69,7 +67,7 @@ public class MatrixGameMap implements GameMap {
             locations.add(new Location(UUID.fromString(loadedMap.get(i).split(";")[0]),loadedMap.get(i).split(";")[1]));
         }
 
-        this.buildMap(locations,initialLocation,"mapName");
+        this.buildMap(locations,initialLocation);
 
     }
 

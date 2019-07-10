@@ -28,7 +28,10 @@ public class Character {
         }
     }
 
-    //Creates a character with the given list of attributes.*Used when loading a game*
+    /**
+     * Creates a character with the given list of attributes.*Used when loading a game*
+     * @param attributes
+     */
     public Character(List<String> attributes) {
         this.name = attributes.get(0);attributes.remove(0);
         this.maxHp = Integer.parseInt(attributes.get(0));attributes.remove(0);
@@ -42,16 +45,28 @@ public class Character {
         }
     }
 
+    /**
+     * Calculates the damage as the baseDamage multiplied by the DamageMultiplier of each modifier
+     * @return
+     */
     public Integer getDamage(){
         return Math.toIntExact(Math.round(modifiers.values().stream().map(Modifier::getDamageMultiplyer).reduce(this.baseDamage, (a, b) -> a * b)));
     }
 
+    /**
+     * Calculates the damage as the baseDamage multiplied by the DamageMultiplier of each modifier
+     * @return
+     */
     public Integer getDefense(){
         return Math.toIntExact(Math.round(modifiers.values().stream().map(Modifier::getDefenseMultiplyer).reduce(this.baseDefense, (a, b) -> a * b)));
     }
 
-
+    /**
+     * Decrements the character currentHp, calculating the damageReceived as damage done by the enemy minus the character defense.
+     * @param damageReceived
+     */
     public void receiveDamage(Integer damageReceived){
+        //If the damage  minus the defense, is a negative value, then the currentHp remains the samen.
         this.currentHp -= Math.max(0, damageReceived-this.getDefense());
     }
 
@@ -113,6 +128,7 @@ public class Character {
         return currentHp>0;
     }
 
+    //Used to persist the character in a file.
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
